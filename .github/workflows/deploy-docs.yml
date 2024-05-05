@@ -2,6 +2,10 @@
 name: Build and deploy Sovereign Engine documentation to GitHub Pages
 
 on:
+  # Allow triggers from other repos (i.e. on release)
+  repository_dispatch:
+    types: [sovereign_release]
+
   # Runs on pushes targeting the default branch
   push:
     branches:
@@ -34,7 +38,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: opticfluorine/sovereign
-          ref: resource-docs
           lfs: true
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -49,7 +52,8 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './docs/manual/_build/html'
+          # Upload entire repository
+          path: './_build/html'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
